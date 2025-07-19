@@ -5,6 +5,8 @@ class DDS_TEST(EnvExperiment):
     """dds_0_0_channel_test"""
     def build(self):
         self.setattr_device("core")
+        # self.setattr_device("urukul0_ch0")
+        # rename the device urukul0_ch0 to dds_0_0
         self.dds_0_0 = self.get_device("urukul0_ch0")
         
     @kernel
