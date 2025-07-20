@@ -3,6 +3,7 @@ from artiq.experiment import *
 import numpy as np
 
 class Sampler(EnvExperiment):
+    """sampler recommended"""
     def build(self):
         self.setattr_device("core")
         self.setattr_device("sampler0")

@@ -8,7 +8,7 @@ import numpy as np                                  #imports everything from num
 #sampling frequency = 10.1kHz
 
 class Sampler_Multiple_Samples(EnvExperiment):
-    """Sampler Multiple Samples"""
+    """Sampler Multiple Samples(wrong code)"""
     def build(self): #this code runs on the host device
 
         self.setattr_device("core")                 #saves core device drivers as attributes
