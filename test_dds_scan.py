@@ -3,6 +3,7 @@ Test file for DDS scanning experiment.
 """
 from ndscan.experiment import *
 from artiq.experiment import *
+from artiq.language.units import ms, us, MHz, dB
 import math
 import numpy as np
 
@@ -50,16 +51,21 @@ class DDSScan(ExpFragment):
         self.setattr_result("result", FloatChannel, "Measurement result")
 
     @kernel
-    def run_once(self):
-        # Initialize DDS
-        self.core.reset() 
+    def prepare(self):
+        self.core.reset()
         self.urukul0_ch0.cpld.init()
         self.urukul0_ch0.init()
-        delay(100*ms)
         
+        print("DDS Init Done")
+        delay(100*ms)
+
+    @kernel
+    def run_once(self):
+        self.core.reset()
+        delay(100*ms)
         # Set attenuation
         self.urukul0_ch0.set_att(self.attenuation.get() * dB)
-        
+        delay(100*ms)
         # Calculate current frequency and amplitude
         freq = self.frequency.get()
         amp = self.amplitude.get()
@@ -79,6 +85,7 @@ class DDSScan(ExpFragment):
         # Store result (for demonstration, we'll use amplitude as result)
         self.result.push(amp)
         delay(100*ms)
+        print("DDS Run Once Done")
 
     def get_default_analyses(self):
         return [
