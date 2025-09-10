@@ -37,9 +37,9 @@ class TTL_input(EnvExperiment):
         pmt_temp[1] = 500
         self.set_dataset("pmt_readlist", pmt_temp, broadcast=True)
         while True:
-            delay(10*ms)
+            delay(100*ms)
             with parallel:
-                cnt = ttl.gate_rising(100*ms)
+                cnt = ttl.gate_rising(1*ms)
                 num = ttl.count(cnt)
             
             pmt_temp[2:-1] = pmt_temp[3:]

@@ -117,6 +117,7 @@ class TrapEnvScan(ExpFragment):
 
     @kernel
     def run_once(self):
+        """to be rewritten in different experiments"""
         self.core.reset()
         delay(100*ms)
         self.dds_0_0.set(frequency=self.frequency.get()*MHz,phase=0.0*math.pi, amplitude = 0.4)
