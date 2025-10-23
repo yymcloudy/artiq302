@@ -12,7 +12,7 @@ from trapenv import TrapEnvScan
 from ndscan.experiment import *
 
 
-class BaseSequence(TrapEnvScan):
+class BaseSequence_pumping(TrapEnvScan):
     """pumping test BaseSequence"""
     num_shots = 0
     def build_fragment(self):
@@ -182,6 +182,6 @@ class BaseSequence(TrapEnvScan):
         delay(100*us)
         print("BaseSequence Run_Once Done")
 
-BaseSequenceExp = make_fragment_scan_exp(BaseSequence)
+BaseSequenceExp = make_fragment_scan_exp(BaseSequence_pumping)
 
 

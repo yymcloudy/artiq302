@@ -92,21 +92,18 @@ class TrapEnvScan(ExpFragment):
         self.core.break_realtime()
         self.dds_0_0.sw.off()
         self.dds_0_1.sw.off()
-        self.dds_0_2.sw.off()
+        self.dds_0_2.sw.off() # not used 
         self.dds_0_3.sw.off()
         self.dds_1_0.sw.off()
         self.dds_1_1.sw.off()
         self.dds_1_2.sw.off()
         self.dds_1_3.sw.off()
-        self.ttl0.off()
-        self.ttl1.off()
-        self.ttl2.off()
-        self.ttl3.off()
-        self.ttl4.off()
-        self.ttl5.off()
-        self.ttl6.off()
+
+        self.ttl4.off() # when ttl4 is off, the 14.7G sideband is open.
+        self.ttl5.off() # when ttl5 is off, the 2.1G sideband is closed.
+        self.ttl6.on() # when ttl6 is on, the viewer is ccd, or the viewer is pmt.
         self.ttl7.off()
-        self.ttl8.off()
+        self.ttl8.off() # not used 
         self.ttl9.off()
         self.ttl10.off()
         self.ttl11.off()
