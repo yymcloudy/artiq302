@@ -25,7 +25,7 @@ class Set_Idle(BaseSequence_Rabi):
 
     @kernel
     def run_once(self):
-        self.set_idle()
+        BaseSequence_Rabi.set_idle(self)
 
 
 Set_IdleExp = make_fragment_scan_exp(Set_Idle)

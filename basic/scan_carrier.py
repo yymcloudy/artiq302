@@ -100,8 +100,8 @@ class BaseSequence_Carrier(TrapEnvScan):
         self.core.reset()
 
         # open 370 double pass laser
-        self.double_pass_370.set_att(0.5*dB) # to be improved
-        self.double_pass_370.set(frequency=125*MHz,phase=0.0*math.pi, amplitude = 0.2)
+        self.double_pass_370.set_att(1.5*dB) # to be improved
+        self.double_pass_370.set(frequency=130*MHz,phase=0.0, amplitude = 0.1)
         self.double_pass_370.sw.on()
 
         self.eom_14_7_switch.off()
@@ -113,8 +113,13 @@ class BaseSequence_Carrier(TrapEnvScan):
     @kernel
     def device_cleanup(self):
         delay(1000*ms)
-        self.double_pass_370.set(frequency=133*MHz,phase=0.0*math.pi, amplitude = 0.2)
+        self.double_pass_370.set_att(1.5*dB)
+        self.double_pass_370.set(frequency=130*MHz,phase=0.0, amplitude = 0.1)
+        self.double_pass_370.sw.on()
+        self.laser370_sideband_control(sideband='14.7', enable=True)
+        self.laser370_sideband_control(sideband='2.1', enable=False)
         self.pmt_ccd_switch.on()
+        print("BaseSequence Device Cleanup Done")
     
     @kernel
     def cooling(self):
@@ -122,7 +127,7 @@ class BaseSequence_Carrier(TrapEnvScan):
         with parallel:
             self.laser370_sideband_control(sideband='14.7', enable=True)
             self.laser370_sideband_control(sideband='2.1', enable=False)
-            self.double_pass_370.set(frequency=133*MHz,phase=0.0*math.pi, amplitude = 0.2)
+            self.double_pass_370.set(frequency=130*MHz,phase=0.0, amplitude = 0.11)
         delay(self.cooling_time.get())
 
     def _push_counts(self, num):
@@ -130,13 +135,11 @@ class BaseSequence_Carrier(TrapEnvScan):
 
     @kernel
     def carrier_scan(self):
-        self.laser370_switch_control(switch='on')
-        
         with parallel:
-            self.laser370_sideband_control(sideband='14.7', enable=True)
+            self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=False)
-            self.double_pass_370.set(frequency=self.carrier_scan_freq.get(),phase=0.0*math.pi, amplitude = 0.2)
-
+            self.double_pass_370.set(frequency=self.carrier_scan_freq.get(),phase=0.0, amplitude = 0.1)
+        self.laser370_switch_control(switch='on')
         with parallel:
             cnt = self.counter.gate_rising(self.carrier_scan_time.get())
             num = self.counter.count(cnt)

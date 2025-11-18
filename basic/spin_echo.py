@@ -12,12 +12,12 @@ from trapenv import TrapEnvScan
 from ndscan.experiment import *
 
 
-class BaseSequence_Rabi(TrapEnvScan):
-    """rabi mw scan BaseSequence copy"""
+class BaseSequence_SpinEcho(TrapEnvScan):
+    """spin echo mw Sequence"""
     num_shots = 0
     def build_fragment(self):
         TrapEnvScan.build_fragment(self)
-        # add devices
+        # add devices       
         self.counter = self.ttl0
 
         self.double_pass_370 = self.dds_0_0
@@ -30,13 +30,17 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.laser370_switch = self.ttl8 # not used
         
         # add parameters
-        self.setattr_param("double_pass_frequency", FloatParam, "2 pass Frequency", default=125.0*MHz, unit="MHz")
+        self.setattr_param("double_pass_frequency_cooling", FloatParam, "2 pass Freq cooling", default=133.0*MHz, unit="MHz")
+        self.setattr_param("double_pass_frequency_detection", FloatParam, "2 pass Freq detection", default=139.0*MHz, unit="MHz")
         self.setattr_param("use_pmt_to_detect_or_no", IntParam, "use_pmt_to_detect_or_no", default=1, min=0, max=1)
-        self.setattr_param("cooling_time", FloatParam, "Cooling time", default=1000.0*us, unit="us")
-        self.setattr_param("pumping_time", FloatParam, "Pumping time", default=100.0*us, unit="us")
-        self.setattr_param("detection_time", FloatParam, "Detection time", default=500.0*us, unit="us")
-        self.setattr_param("mw_freq", FloatParam, "MW frequency", default=180.0*MHz, unit="MHz")
-        self.setattr_param("mw_duration", FloatParam, "MW duration", default=100.0*us, unit="us")
+        self.setattr_param("cooling_time", FloatParam, "Cooling time", default=100.0*us, unit="us")
+        self.setattr_param("pumping_time", FloatParam, "Pumping time", default=20.0*us, unit="us")
+        self.setattr_param("evolution_time", FloatParam, "Evolution time", default=20.0*us, unit="us")
+        self.setattr_param("mw_freq", FloatParam, "MW frequency", default=143.084*MHz, unit="MHz")
+        self.setattr_param("mw_duration_pi", FloatParam, "Ramsey pi MW duration", default=300.0*us, unit="us")
+        self.setattr_param("mw_phase", FloatParam, "phase between 2 pulses", default=0, min=0, max=1)
+        self.setattr_param("mw_phase_echo", FloatParam, "phase of echo pulse", default=180, min=0, max=1)
+        self.setattr_param("detection_time", FloatParam, "Detection time", default=100.0*us, unit="us")
         # add dataset
         # self.setattr_result("counts")
         # self.setattr_dataset("counts", IntChannel)
@@ -50,7 +54,7 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.core.break_realtime()
 
         self.double_pass_370.set_att(1.5*dB)
-        self.double_pass_370.set(frequency=self.double_pass_frequency.get(), phase=0.0*math.pi, amplitude = 0.2)
+        self.double_pass_370.set(frequency=self.double_pass_frequency_cooling.get(), phase=0.0, amplitude = 0.11)
         self.double_pass_370.sw.on()
         self.mw_tunefreq.sw.off()
 
@@ -113,11 +117,11 @@ class BaseSequence_Rabi(TrapEnvScan):
 
         # open 370 double pass laser
         self.double_pass_370.set_att(1.5*dB) # to be improved
-        self.double_pass_370.set(frequency=self.double_pass_frequency.get(), phase=0.0, amplitude = 0.2)
+        self.double_pass_370.set(frequency=self.double_pass_frequency_cooling.get(),phase=0.0, amplitude = 0.11)
         self.double_pass_370.sw.on()
 
         # self.mw_tunefreq.set(self.mw_freq.get())
-        self.mw_tunefreq.set(frequency=self.mw_freq.get(), phase=0.0,amplitude = 0.6)
+        self.mw_tunefreq.set(frequency=self.mw_freq.get(), phase=0.0,amplitude = 0.3)
         self.mw_tunefreq.sw.on()
 
         self.eom_14_7_switch.off()
@@ -136,7 +140,7 @@ class BaseSequence_Rabi(TrapEnvScan):
     def cooling(self):
         self.laser370_switch_control(switch='on')
         with parallel:
-            self.double_pass_370.set(frequency=self.double_pass_frequency.get(),phase=0.0, amplitude = 0.2)
+            self.double_pass_370.set(frequency=self.double_pass_frequency_cooling.get(),phase=0.0, amplitude = 0.11)
             self.laser370_sideband_control(sideband='14.7', enable=True)
             self.laser370_sideband_control(sideband='2.1', enable=False)
         delay(self.cooling_time.get())
@@ -145,7 +149,7 @@ class BaseSequence_Rabi(TrapEnvScan):
     def pumping(self):
         self.laser370_switch_control(switch='on')
         with parallel:
-            self.double_pass_370.set(frequency=self.double_pass_frequency.get(),phase=0.0, amplitude = 0.2)
+            self.double_pass_370.set(frequency=self.double_pass_frequency_cooling.get(),phase=0.0, amplitude = 0.11)
             self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=True)
         delay(self.pumping_time.get())
@@ -157,24 +161,42 @@ class BaseSequence_Rabi(TrapEnvScan):
     @kernel
     def mw_gate(self):
         self.laser370_switch_control(switch='off')
-        self.mw_tunefreq.set(frequency=self.mw_freq.get(),phase=0.0, amplitude = 0.8) # to do: change dds source
+        self.mw_tunefreq.set(frequency=self.mw_freq.get(),phase=0.0, amplitude = 0.3) # to do: change dds source
         with parallel:
             self.mw_switch.on()
-        delay(self.mw_duration.get())
+        delay(self.mw_duration_pi.get()/2)
+        self.mw_switch.off()
+    
+    @kernel
+    def mw_gate2(self):
+        self.laser370_switch_control(switch='off')
+        self.mw_tunefreq.set(frequency=self.mw_freq.get(),phase=self.mw_phase.get(), amplitude = 0.3) # to do: change dds source
+        with parallel:
+            self.mw_switch.on()
+        delay(self.mw_duration_pi.get()/2)
+        self.mw_switch.off()
+
+    @kernel
+    def mw_gate_echo(self):
+        self.laser370_switch_control(switch='off')
+        self.mw_tunefreq.set(frequency=self.mw_freq.get(),phase=self.mw_phase_echo.get(), amplitude = 0.3) # to do: change dds source
+        with parallel:
+            self.mw_switch.on()
+        delay(self.mw_duration_pi.get())
         self.mw_switch.off()
 
     @kernel
     def detection(self):
         self.laser370_switch_control(switch='on')
-        self.double_pass_370.set(frequency=139*MHz,phase=0.0, amplitude = 0.2)
         with parallel:
-            self.double_pass_370.set(frequency=139*MHz,phase=0.0*math.pi, amplitude = 0.2)
+            self.double_pass_370.set(frequency=139*MHz,phase=0.0, amplitude = 0.08)
             self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=False)
+        with parallel:
             cnt = self.counter.gate_rising(self.detection_time.get())
             num = self.counter.count(cnt)
         delay(100*us)
-        self.double_pass_370.set(frequency=self.double_pass_frequency.get(),phase=0.0*math.pi, amplitude = 0.2)
+        self.double_pass_370.set(frequency=self.double_pass_frequency_cooling.get(),phase=0.0, amplitude = 0.11)
         
         delay(1*ms)
 
@@ -187,7 +209,7 @@ class BaseSequence_Rabi(TrapEnvScan):
             self.laser370_sideband_control(sideband='2.1', enable=False)
         
         # self._push_counts([self.pumping_time.get(), float(num)])
-        self._push_counts([self.mw_duration.get(), self.mw_freq.get(), float(num)])
+        self._push_counts([float(num)])
         print("experiment_num_shots: ", self.num_shots)
         print("optical_num: ", num)
         self.num_shots += 1
@@ -199,11 +221,16 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.cooling()
         self.pumping()
         self.mw_gate()
+        delay(self.evolution_time.get()*0.5)
+        # self.mw_gate_echo()
+        delay(self.evolution_time.get()*0.5)
+        # self.mw_gate_echo()
+        self.mw_gate2()
         self.detection()
         # Longer delay means more safety; shorter delay means faster execution.
         delay(100*us)
         print("BaseSequence Run_Once Done")
 
-BaseSequenceExp = make_fragment_scan_exp(BaseSequence_Rabi)
+BaseSequenceExp = make_fragment_scan_exp(BaseSequence_SpinEcho)
 
 

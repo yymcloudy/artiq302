@@ -89,9 +89,15 @@ class TrapEnvScan(ExpFragment):
 
     @kernel
     def set_idle(self):
+        self.core.reset()
         self.core.break_realtime()
-        self.dds_0_0.sw.off()
+        
+        self.dds_0_0.set_att(0.5*dB)
+        self.dds_0_0.set(frequency=133*MHz, phase=0.0, amplitude = 0.2)
+        self.dds_0_0.sw.on()
+
         self.dds_0_1.sw.off()
+
         self.dds_0_2.sw.off() # not used 
         self.dds_0_3.sw.off()
         self.dds_1_0.sw.off()
@@ -111,7 +117,8 @@ class TrapEnvScan(ExpFragment):
         self.ttl13.off()
         self.ttl14.off()
         self.ttl15.off()
-        # print("TrapEnvScan Set_Idle Done")
+        delay(100*ms)
+        print("TrapEnvScan Set_Idle Done")
 
     @kernel
     def run_once(self):

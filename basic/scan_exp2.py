@@ -99,7 +99,7 @@ class BaseSequence_pumping(TrapEnvScan):
 
         # open 370 double pass laser
         self.double_pass_370.set_att(0.5*dB) # to be improved
-        self.double_pass_370.set(frequency=133*MHz,phase=0.0*math.pi, amplitude = 0.2)
+        self.double_pass_370.set(frequency=133*MHz,phase=0.0, amplitude = 0.2)
         self.double_pass_370.sw.on()
 
 
