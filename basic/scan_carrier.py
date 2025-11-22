@@ -114,7 +114,7 @@ class BaseSequence_Carrier(TrapEnvScan):
     def device_cleanup(self):
         delay(1000*ms)
         self.double_pass_370.set_att(1.5*dB)
-        self.double_pass_370.set(frequency=130*MHz,phase=0.0, amplitude = 0.1)
+        self.double_pass_370.set(frequency=133*MHz,phase=0.0, amplitude = 0.1)
         self.double_pass_370.sw.on()
         self.laser370_sideband_control(sideband='14.7', enable=True)
         self.laser370_sideband_control(sideband='2.1', enable=False)
@@ -127,7 +127,7 @@ class BaseSequence_Carrier(TrapEnvScan):
         with parallel:
             self.laser370_sideband_control(sideband='14.7', enable=True)
             self.laser370_sideband_control(sideband='2.1', enable=False)
-            self.double_pass_370.set(frequency=130*MHz,phase=0.0, amplitude = 0.11)
+            self.double_pass_370.set(frequency=133*MHz,phase=0.0, amplitude = 0.11)
         delay(self.cooling_time.get())
 
     def _push_counts(self, num):

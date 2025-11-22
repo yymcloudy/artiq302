@@ -180,8 +180,7 @@ class BaseSequence_SpinEcho(TrapEnvScan):
     def mw_gate_echo(self):
         self.laser370_switch_control(switch='off')
         self.mw_tunefreq.set(frequency=self.mw_freq.get(),phase=self.mw_phase_echo.get(), amplitude = 0.3) # to do: change dds source
-        with parallel:
-            self.mw_switch.on()
+        self.mw_switch.on()
         delay(self.mw_duration_pi.get())
         self.mw_switch.off()
 
@@ -222,9 +221,9 @@ class BaseSequence_SpinEcho(TrapEnvScan):
         self.pumping()
         self.mw_gate()
         delay(self.evolution_time.get()*0.5)
-        # self.mw_gate_echo()
+        self.mw_gate_echo()
         delay(self.evolution_time.get()*0.5)
-        # self.mw_gate_echo()
+        self.mw_gate_echo()
         self.mw_gate2()
         self.detection()
         # Longer delay means more safety; shorter delay means faster execution.
