@@ -203,10 +203,6 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.core.break_realtime()
         self.cooling()
         self.pumping()
-        # self.mw_gate()
-        # self.mw_gate()
-        # self.mw_gate()
-        # self.mw_gate()
         self.mw_gate()
         self.detection()
         # Longer delay means more safety; shorter delay means faster execution.
