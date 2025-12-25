@@ -10,7 +10,7 @@ class PumpingFragment(Trap302EnvScan):
     """pumping_fragment"""
     def build_fragment(self):
         Trap302EnvScan.build_fragment(self)
-        self.setattr_param("pumping_time", FloatParam, "Pumping time", default=100.0*us, unit="us")
+        self.setattr_param("pumping_time", FloatParam, "Pumping time", default=20.0*us, unit="us")
         self.setattr_param("pumping_double_pass_frequency", FloatParam, "Pumping double pass frequency", default=133*MHz, unit="MHz")
 
     @kernel

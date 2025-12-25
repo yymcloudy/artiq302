@@ -12,7 +12,7 @@ from ndscan.experiment import *
 
 
 class BaseSequence_Rabi(TrapEnvScan):
-    """rabi mw scan BaseSequence"""
+    """pi time scan BaseSequence"""
     num_shots = 0
     def build_fragment(self):
         TrapEnvScan.build_fragment(self)
@@ -38,7 +38,7 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.setattr_param("mw_amplitude", FloatParam, "MW amplitude", default=0.3, unit="")
         self.setattr_param("mw_freq", FloatParam, "MW frequency", default=180.0*MHz, unit="MHz")
         self.setattr_param("mw_duration", FloatParam, "MW duration", default=100.0*us, unit="us")
-        # self.setattr_param("mw_times", IntParam, "MW times", default=1, min=1, max=5)
+        self.setattr_param("mw_times", IntParam, "MW times", default=1, min=1, max=100)
         # add dataset
         # self.setattr_result("counts")
         # self.setattr_dataset("counts", IntChannel)
@@ -172,6 +172,15 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.mw_switch.off()
 
     @kernel
+    def mw_gate_half(self):
+        self.laser370_switch_control(switch='off')
+        self.mw_tunefreq.set(frequency=self.mw_freq.get(), phase=0.0, amplitude = self.mw_amplitude.get()) # to do: change dds source
+        with parallel:
+            self.mw_switch.on()
+        delay(self.mw_duration.get()/2)
+        self.mw_switch.off()
+
+    @kernel
     def detection(self):
         with parallel:
             self.double_pass_370.set(frequency=self.detection_frequency.get(),phase=0.0, amplitude = 0.08)
@@ -206,9 +215,11 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.core.break_realtime()
         self.cooling()
         self.pumping()
-        # for i_times in range(0,2*self.mw_times.get()-1,2):
-        #     self.mw_gate()
-        self.mw_gate()
+        # self.mw_gate_half()
+        for i_times in range(0,2*self.mw_times.get()-1,1):
+            self.mw_gate()
+            delay(0.1*us)
+        # self.mw_gate()
         self.detection()
         # Longer delay means more safety; shorter delay means faster execution.
         delay(100*us)

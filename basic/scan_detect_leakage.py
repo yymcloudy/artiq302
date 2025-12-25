@@ -183,7 +183,7 @@ class BaseSequence_Detection_Leakage(TrapEnvScan):
     @kernel
     def detection(self):
         with parallel:
-            self.double_pass_370.set(frequency=139*MHz,phase=0.0, amplitude =0.1)
+            self.double_pass_370.set(frequency=138*MHz,phase=0.0, amplitude =0.1)
             self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=False)
         self.laser370_switch_control(switch='on')

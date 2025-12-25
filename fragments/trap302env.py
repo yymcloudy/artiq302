@@ -38,7 +38,24 @@ class Trap302EnvScan(HardwareEnvScan):
 
     @kernel
     def device_setup(self):
+        """device setup every time before run_once"""
         pass
+    
+
+    @kernel
+    def device_cleanup(self):
+        self.set_idle()
+
+    @kernel
+    def init_longtime_equipment(self, pmt=True):
+        self.core.break_realtime()
+        self.core.reset()
+        if pmt:  
+            self.pmt_ccd_switch.off()
+            delay(5000*ms)
+        else:
+            self.pmt_ccd_switch.on()
+            delay(5000*ms)
     
     @kernel
     def laser370_switch_control(self, switch='on'):
@@ -86,9 +103,9 @@ class Trap302EnvScan(HardwareEnvScan):
         self.core.reset()
         self.core.break_realtime()
 
-        self.laser370_switch_control(switch='on')
         self.laser370_sideband_control(sideband='14.7', enable=True)
         self.laser370_sideband_control(sideband='2.1', enable=False)
+        self.laser370_switch_control(switch='on')
 
         self.double_pass_370.set_att(1.5*dB)
         self.double_pass_370.set(frequency=133*MHz, phase=0.0, amplitude = 0.11)
@@ -99,4 +116,10 @@ class Trap302EnvScan(HardwareEnvScan):
         self.mw_switch.off()
 
         print("Trap302EnvScan Set Idle Done")
-
+    
+    @kernel
+    def get_sampler(self):
+        smp = [0.000]
+        self.sampler0.sample(smp)
+        return smp[0]
+    

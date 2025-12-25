@@ -31,7 +31,7 @@ class BaseSequence_SpinEcho(TrapEnvScan):
         
         # add parameters
         self.setattr_param("double_pass_frequency_cooling", FloatParam, "2 pass Freq cooling", default=133.0*MHz, unit="MHz")
-        self.setattr_param("double_pass_frequency_detection", FloatParam, "2 pass Freq detection", default=139.0*MHz, unit="MHz")
+        self.setattr_param("double_pass_frequency_detection", FloatParam, "2 pass Freq detection", default=138.0*MHz, unit="MHz")
         self.setattr_param("use_pmt_to_detect_or_no", IntParam, "use_pmt_to_detect_or_no", default=1, min=0, max=1)
         self.setattr_param("cooling_time", FloatParam, "Cooling time", default=100.0*us, unit="us")
         self.setattr_param("pumping_time", FloatParam, "Pumping time", default=20.0*us, unit="us")
@@ -188,7 +188,7 @@ class BaseSequence_SpinEcho(TrapEnvScan):
     def detection(self):
         self.laser370_switch_control(switch='on')
         with parallel:
-            self.double_pass_370.set(frequency=139*MHz,phase=0.0, amplitude = 0.08)
+            self.double_pass_370.set(frequency=138*MHz,phase=0.0, amplitude = 0.08)
             self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=False)
         with parallel:

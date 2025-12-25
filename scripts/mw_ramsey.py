@@ -25,6 +25,7 @@ class MW_Ramsey(Trap302EnvScan):
     
     def prepare(self):
         Trap302EnvScan.prepare(self)
+        self.init_longtime_equipment(pmt=True)
         self.n_shots = 0
 
     @kernel

@@ -166,9 +166,9 @@ class BaseSequence_Rabi(TrapEnvScan):
     @kernel
     def detection(self):
         self.laser370_switch_control(switch='on')
-        self.double_pass_370.set(frequency=139*MHz,phase=0.0, amplitude = 0.2)
+        self.double_pass_370.set(frequency=138*MHz,phase=0.0, amplitude = 0.2)
         with parallel:
-            self.double_pass_370.set(frequency=139*MHz,phase=0.0*math.pi, amplitude = 0.2)
+            self.double_pass_370.set(frequency=138*MHz,phase=0.0*math.pi, amplitude = 0.2)
             self.laser370_sideband_control(sideband='14.7', enable=False)
             self.laser370_sideband_control(sideband='2.1', enable=False)
             cnt = self.counter.gate_rising(self.detection_time.get())

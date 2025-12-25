@@ -10,16 +10,14 @@ class DopplerCoolingFragment(Trap302EnvScan):
     """doppler_cooling_fragment"""
     def build_fragment(self):
         Trap302EnvScan.build_fragment(self)
-        self.setattr_param("cooling_time", FloatParam, "Cooling time", default=100.0*us, unit="us")
+        self.setattr_param("cooling_time", FloatParam, "Cooling time", default=1000.0*us, unit="us")
         self.setattr_param("cooling_double_pass_frequency", FloatParam, "Cooling double pass frequency", default=133*MHz, unit="MHz")
-
 
     @kernel
     def device_setup(self):
         print("DopplerCoolingFragment: Device Setup")
         self.core.break_realtime()
         self.core.reset()
-
 
     @kernel
     def run_once(self):

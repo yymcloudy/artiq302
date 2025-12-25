@@ -12,7 +12,7 @@ class MicrowaveFragment(Trap302EnvScan):
         Trap302EnvScan.build_fragment(self)
         self.setattr_param("microwave_frequency", FloatParam, "Microwave frequency", default=180.0*MHz, unit="MHz")
         self.setattr_param("microwave_duration", FloatParam, "Microwave duration", default=100.0*us, unit="us")
-        self.setattr_param("microwave_amplitude", FloatParam, "Microwave amplitude", default=0.2, unit="")
+        self.setattr_param("microwave_amplitude", FloatParam, "Microwave amplitude", default=0.3, unit="")
         self.setattr_param("microwave_phase", FloatParam, "Microwave phase", default=0.0, unit="")
 
     @kernel
