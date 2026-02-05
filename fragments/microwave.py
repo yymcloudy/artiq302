@@ -22,9 +22,12 @@ class MicrowaveFragment(Trap302EnvScan):
         self.core.reset()
 
     @kernel
-    def run_once(self):
+    def run_once(self, frequency_shift=0.0*kHz ,phase_shift=0.0):
         self.laser370_switch_control(switch='off')
-        self.mw_tunefreq.set(frequency=self.microwave_frequency.get(), phase=self.microwave_phase.get(), amplitude = self.microwave_amplitude.get())
+        # Phase Defination is from 0 to 1
+        phase_shift = (phase_shift + self.microwave_phase.get()) % 1
+        frequency_shift = frequency_shift + self.microwave_frequency.get()
+        self.mw_tunefreq.set(frequency=frequency_shift, phase=phase_shift, amplitude = self.microwave_amplitude.get())
         self.mw_tunefreq.sw.on()
         self.mw_switch.on()
         delay(self.microwave_duration.get())

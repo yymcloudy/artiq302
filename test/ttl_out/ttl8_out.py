@@ -2,7 +2,7 @@ from artiq.experiment import *
 #sends simple pulses out of the TTL ports; this is done sequentially
 #minimum pulse width = 5ns
 class TTL_Output(EnvExperiment):
-    """output_8"""
+    """output_1"""
     def build(self):
         self.setattr_device("core")
         self.setattr_device("ttl8")

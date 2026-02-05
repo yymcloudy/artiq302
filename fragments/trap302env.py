@@ -24,10 +24,18 @@ class Trap302EnvScan(HardwareEnvScan):
         self.double_pass_370 = self.dds_0_0
         self.mw_tunefreq = self.dds_0_1
 
+        self.nv_double_pass_532 = self.dds_1_2
+        self.nv_mw_tunefreq = self.dds_0_3 # DO NOT USE THIS DDS FOR NOW
+        self.nv_dds_I = self.dds_1_0
+        self.nv_dds_Q = self.dds_1_1
+
         self.eom_14_7_switch = self.ttl4
         self.eom_2_1_switch = self.ttl5
         self.pmt_ccd_switch = self.ttl6
         self.mw_switch = self.ttl7
+        self.ccd_trigger = self.ttl8
+        self.magnetic_noise_switch = self.ttl9
+
     
     def host_setup(self):
         HardwareEnvScan.host_setup(self)
@@ -58,6 +66,13 @@ class Trap302EnvScan(HardwareEnvScan):
             delay(5000*ms)
     
     @kernel
+    def nv_laser_532nm_switch_control(self, switch='on'):
+        if switch == 'on':
+            self.nv_double_pass_532.sw.on()
+        elif switch == 'off':
+            self.nv_double_pass_532.sw.off()
+
+    @kernel
     def laser370_switch_control(self, switch='on'):
         """
         laser370 switch
@@ -66,6 +81,18 @@ class Trap302EnvScan(HardwareEnvScan):
             self.double_pass_370.sw.on()
         elif switch == 'off':
             self.double_pass_370.sw.off()
+
+
+    @kernel
+    def magnetic_noise_switch_control(self, switch=False):
+        """
+        magnetic noise switch
+        """
+        if switch:
+            self.magnetic_noise_switch.on()
+        else:
+            self.magnetic_noise_switch.off()
+
 
     @kernel
     def laser370_sideband_control(self, sideband='14.7', enable=True):
@@ -114,6 +141,13 @@ class Trap302EnvScan(HardwareEnvScan):
 
         self.pmt_ccd_switch.on()
         self.mw_switch.off()
+        self.magnetic_noise_switch.off()
+
+        self.nv_laser_532nm_switch_control(switch='off')
+        self.nv_double_pass_532.set_att(1.5*dB)
+        self.nv_double_pass_532.set(frequency=220*MHz, phase=0.0, amplitude = 0.2) #to do
+
+        self.nv_mw_tunefreq.sw.off()
 
         print("Trap302EnvScan Set Idle Done")
     

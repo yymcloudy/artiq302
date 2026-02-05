@@ -26,7 +26,7 @@ class DDS_TEST(EnvExperiment):
 
         amp0_ch0 = 0.4
         
-        phase00=0.0 * math.pi
+        phase00=0.0 * math.pi # no pi!
 
 
     

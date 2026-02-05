@@ -12,7 +12,8 @@ class Sampler(EnvExperiment):
     def run(self):
         self.core.reset()
         self.sampler0.init()
-        self.sampler0.set_gain_mu(7,0) #sets the attenuation
+        for i in range(8):
+            self.sampler0.set_gain_mu(i,0) #sets the attenuation
         self.core.break_realtime()
 
         n_samples = 100
