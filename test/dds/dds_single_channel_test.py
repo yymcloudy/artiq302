@@ -12,8 +12,8 @@ class DDS_Single_Channel_Test(EnvExperiment):
         
         # Add parameters for DDS settings
         self.setattr_argument("frequency", NumberValue(180, min=0, max=400, step=1, precision=0))
-        self.setattr_argument("amplitude", NumberValue(0.40, min=0.00, max=1.00, step=0.01, precision=3))
-        self.setattr_argument("phase", NumberValue(0, min=0, max=2, step=0.1, precision=1))
+        self.setattr_argument("amplitude", NumberValue(0.10, min=0.00, max=1.00, step=0.01, precision=3))
+        self.setattr_argument("phase", NumberValue(0, min=0, max=1, step=0.1, precision=1))
         self.setattr_argument("duration", NumberValue(2000, min=0, max=9000000, step=100, precision=0))
         self.setattr_argument("attenuation", NumberValue(0, min=0, max=31.5, step=0.5, precision=1))
         
@@ -61,7 +61,7 @@ class DDS_Single_Channel_Test(EnvExperiment):
         
         # Set frequency, phase and amplitude
         dds.set(frequency=self.frequency * MHz,
-                phase=self.phase * math.pi,
+                phase=self.phase,
                 amplitude=self.amplitude)
         
         # Turn on the output

@@ -11,7 +11,7 @@ class DopplerCoolingFragment(Trap302EnvScan):
     def build_fragment(self):
         Trap302EnvScan.build_fragment(self)
         self.setattr_param("cooling_time", FloatParam, "Cooling time", default=1000.0*us, unit="us")
-        self.setattr_param("cooling_double_pass_frequency", FloatParam, "Cooling double pass frequency", default=133*MHz, unit="MHz")
+        self.setattr_param("cooling_double_pass_frequency", FloatParam, "Cooling double pass frequency", default=128*MHz, unit="MHz")
 
     @kernel
     def device_setup(self):
@@ -22,7 +22,7 @@ class DopplerCoolingFragment(Trap302EnvScan):
     @kernel
     def run_once(self):
         with parallel:
-            self.double_pass_370.set(frequency=self.cooling_double_pass_frequency.get(),phase=0.0, amplitude = 0.11)
+            self.double_pass_370.set(frequency=self.cooling_double_pass_frequency.get(),phase=0.0, amplitude = 0.75)
             self.laser370_sideband_control(sideband='14.7', enable=True)
             self.laser370_sideband_control(sideband='2.1', enable=False)
         self.laser370_switch_control(switch='on')

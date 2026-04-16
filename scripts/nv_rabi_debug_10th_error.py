@@ -30,16 +30,14 @@ class NVMicrowave_Rabi(Trap302EnvScan):
         self.init_longtime_equipment(pmt_or_ccd_bool=True)
         self.dds_switch_mode = ["dds_sw", "ttl"][int(self.dds_switch_mode_idx)]
 
-        # self.dummy_sequence()
-
     @kernel
     def device_setup(self):
         print("NVMicrowave_Rabi: Device Setup")
         self.core.break_realtime()
         self.core.reset()
         self.device_setup_dds(dds_switch_mode=self.dds_switch_mode)
-        self.core.break_realtime()
-        self.core.reset()
+        # self.core.break_realtime()
+        # self.core.reset()
     
     @kernel
     def device_setup_dds(self, dds_switch_mode="dds_sw"):
@@ -54,21 +52,11 @@ class NVMicrowave_Rabi(Trap302EnvScan):
             self.nv_mw_switch.off()
             self.nv_dds_I.sw.on() # It will always be "on" during the whole experiment.
             self.nv_dds_Q.sw.on() # It will always be "on" during the whole experiment.
+        delay(20*ms)
 
     # @kernel
     # def device_cleanup(self):
     #     Trap302EnvScan.device_cleanup(self)
-
-    @kernel
-    def dummy_sequence(self):
-        print("dummy_sequence started")
-        for i in range(1000):
-            self.polarization.run_once(dds_switch_mode=self.dds_switch_mode)
-            delay(10*us)
-            self.detection.run_once(dds_switch_mode=self.dds_switch_mode, measure_shots=4)
-            delay(5*us)
-            print("dummy_sequence: ", i)
-        print("dummy_sequence done")
 
     @kernel
     def init_longtime_equipment(self, pmt_or_ccd_bool=True):
@@ -88,6 +76,7 @@ class NVMicrowave_Rabi(Trap302EnvScan):
         
         nv_count_2 = self.detection.run_once(dds_switch_mode=self.dds_switch_mode, measure_shots=4)
         
+
         print("n_shots: ", self.n_shots)
         self.results.push([float(nv_count_1), float(nv_count_2)])
 

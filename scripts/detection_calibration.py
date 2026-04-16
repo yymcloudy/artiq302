@@ -22,7 +22,7 @@ class DetectionCalibration(Trap302EnvScan):
     def prepare(self):
         Trap302EnvScan.prepare(self)
         self.n_shots = 0
-        self.init_longtime_equipment(pmt=True)
+        self.init_longtime_equipment(pmt_or_ccd_bool=True)
 
     @kernel
     def device_setup(self):

@@ -21,10 +21,13 @@ class MicroWave_Rabi(Trap302EnvScan):
         self.microwave = self.setattr_fragment("microwave", MicrowaveFragment)
 
         self.setattr_param("pi_pulse_number", IntParam, "Pi pulse number", default=1, unit="")
+        self.setattr_param("pmt_or_ccd", IntParam, "pmt_or_ccd", default=1, min=0, max=1)
+
     def prepare(self):
         Trap302EnvScan.prepare(self)
         self.n_shots = 0
-        self.init_longtime_equipment(pmt=True)
+        self.pmt_or_ccd_bool = (self.pmt_or_ccd.get() == 1)
+        self.init_longtime_equipment(pmt_or_ccd_bool=self.pmt_or_ccd_bool)
 
     @kernel
     def device_setup(self):
@@ -37,10 +40,10 @@ class MicroWave_Rabi(Trap302EnvScan):
     #     Trap302EnvScan.device_cleanup(self)
 
     @kernel
-    def init_longtime_equipment(self, pmt=True):
+    def init_longtime_equipment(self, pmt_or_ccd_bool=True):
         self.core.break_realtime()
         self.double_pass_370.set_att(1.5*dB)
-        Trap302EnvScan.init_longtime_equipment(self, pmt=True)    
+        Trap302EnvScan.init_longtime_equipment(self, pmt_or_ccd_bool=pmt_or_ccd_bool)    
 
     @kernel
     def run_once(self):
@@ -49,7 +52,7 @@ class MicroWave_Rabi(Trap302EnvScan):
         for i in range(self.pi_pulse_number.get()):
             self.microwave.run_once()
             delay(0.1*us)
-        self.detection.run_once()
+        self.detection.run_once(pmt_or_ccd_bool=self.pmt_or_ccd_bool)
         delay(100*us)
         self.n_shots += 1
         print("n_shots: ", self.n_shots)

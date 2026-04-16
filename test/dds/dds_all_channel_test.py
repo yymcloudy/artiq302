@@ -67,31 +67,31 @@ class DDS_TEST(EnvExperiment):
         freq02 = 188
         freq03 = 184
 
-        amp0_ch0 = 0.4
-        amp0_ch1 = 0.4
-        amp0_ch2 = 0.4
-        amp0_ch3 = 0.4
+        amp0_ch0 = 0.1
+        amp0_ch1 = 0.1
+        amp0_ch2 = 0.1
+        amp0_ch3 = 0.1
         
-        phase00=0.0 * math.pi
-        phase01=0.0 * math.pi
-        phase02=0.0 * math.pi
-        phase03=0.0 * math.pi
+        phase00=0.0 
+        phase01=0.0 
+        phase02=0.0 
+        phase03=0.0 
 
 
-        freq10 = 190
-        freq11 = 200
-        freq12 = 205
+        freq10 = 170
+        freq11 = 170
+        freq12 = 200
         freq13 = 210
 
         amp1_ch0 = 0.4
         amp1_ch1 = 0.4
-        amp1_ch2 = 0.4
-        amp1_ch3 = 0.4
+        amp1_ch2 = 0.9
+        amp1_ch3 = 0.1
         
-        phase10=0.0 * math.pi
-        phase11=0.0 * math.pi
-        phase12=0.0 * math.pi
-        phase13=0.0 * math.pi
+        phase10=0.0 
+        phase11=0.0
+        phase12=0.0 
+        phase13=0.0 
 
 
     
@@ -113,7 +113,7 @@ class DDS_TEST(EnvExperiment):
         self.urukul1_ch2.sw.on()
         self.urukul1_ch3.sw.on()
 
-        delay(2000*ms)
+        delay(20000*ms)
 
         # with parallel:
         self.urukul0_ch0.sw.off()

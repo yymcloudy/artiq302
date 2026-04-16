@@ -52,7 +52,7 @@ class BaseSequence_Rabi(TrapEnvScan):
         self.core.break_realtime()
 
         self.double_pass_370.set_att(1.5*dB)
-        self.double_pass_370.set(frequency=self.double_pass_frequency.get(), phase=0.0, amplitude = 0.11)
+        self.double_pass_370.set(frequency=self.double_pass_frequency.get(), phase=0.0, amplitude = 0.75)
         self.double_pass_370.sw.on()
         self.mw_tunefreq.sw.off()
 

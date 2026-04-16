@@ -10,7 +10,7 @@ class NVPolarizationFragment(Trap302EnvScan):
     """nv_polarization_fragment"""
     def build_fragment(self):
         Trap302EnvScan.build_fragment(self)
-        self.setattr_param("polarization_time", FloatParam, "NV polarization time", default=400.0*us, unit="us")
+        self.setattr_param("polarization_time", FloatParam, "NV polarization time", default=5000.0*us, unit="us")
 
     @kernel
     def device_setup(self):
@@ -19,10 +19,15 @@ class NVPolarizationFragment(Trap302EnvScan):
         self.core.reset()
 
     @kernel
-    def run_once(self):
+    def run_once(self, dds_switch_mode="dds_sw"):
+        if dds_switch_mode == "dds_sw":
+            self.nv_dds_I.sw.off()
+            self.nv_dds_Q.sw.off()
+        elif dds_switch_mode == "ttl":
+            self.nv_mw_switch.off()
+
         self.nv_double_pass_532.set_att(0.0*dB)
-        self.nv_double_pass_532.set(frequency=220*MHz, phase=0.0, amplitude = 0.2)
-        self.nv_mw_tunefreq.sw.off()
+        self.nv_double_pass_532.set(frequency=200*MHz, phase=0.0, amplitude = 0.9)
 
         self.nv_laser_532nm_switch_control(switch='on')    
         delay(self.polarization_time.get())

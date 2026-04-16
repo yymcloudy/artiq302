@@ -24,10 +24,10 @@ class Trap302EnvScan(HardwareEnvScan):
         self.double_pass_370 = self.dds_0_0
         self.mw_tunefreq = self.dds_0_1
 
-        self.nv_double_pass_532 = self.dds_1_2
-        self.nv_mw_tunefreq = self.dds_0_3 # DO NOT USE THIS DDS FOR NOW
+        
         self.nv_dds_I = self.dds_1_0
         self.nv_dds_Q = self.dds_1_1
+        self.nv_double_pass_532 = self.dds_1_2
 
         self.eom_14_7_switch = self.ttl4
         self.eom_2_1_switch = self.ttl5
@@ -35,6 +35,8 @@ class Trap302EnvScan(HardwareEnvScan):
         self.mw_switch = self.ttl7
         self.ccd_trigger = self.ttl8
         self.magnetic_noise_switch = self.ttl9
+        self.flag_experiment = self.ttl10
+        self.nv_mw_switch = self.ttl11
 
     
     def host_setup(self):
@@ -55,16 +57,17 @@ class Trap302EnvScan(HardwareEnvScan):
         self.set_idle()
 
     @kernel
-    def init_longtime_equipment(self, pmt=True):
+    def init_longtime_equipment(self, pmt_or_ccd_bool=True):
         self.core.break_realtime()
         self.core.reset()
-        if pmt:  
+        if pmt_or_ccd_bool:  
             self.pmt_ccd_switch.off()
             delay(5000*ms)
         else:
             self.pmt_ccd_switch.on()
             delay(5000*ms)
     
+
     @kernel
     def nv_laser_532nm_switch_control(self, switch='on'):
         if switch == 'on':
@@ -135,7 +138,7 @@ class Trap302EnvScan(HardwareEnvScan):
         self.laser370_switch_control(switch='on')
 
         self.double_pass_370.set_att(1.5*dB)
-        self.double_pass_370.set(frequency=133*MHz, phase=0.0, amplitude = 0.11)
+        self.double_pass_370.set(frequency=128*MHz, phase=0.0, amplitude = 0.2) # 2026.4.16我随便写的，有可能出错
         self.double_pass_370.sw.on()
         self.mw_tunefreq.sw.on() # dds source is on
 
@@ -143,11 +146,13 @@ class Trap302EnvScan(HardwareEnvScan):
         self.mw_switch.off()
         self.magnetic_noise_switch.off()
 
-        self.nv_laser_532nm_switch_control(switch='off')
-        self.nv_double_pass_532.set_att(1.5*dB)
-        self.nv_double_pass_532.set(frequency=220*MHz, phase=0.0, amplitude = 0.2) #to do
-
-        self.nv_mw_tunefreq.sw.off()
+        # AOM+532nm need to be heated up before use
+        self.nv_laser_532nm_switch_control(switch='on')
+        self.nv_double_pass_532.set_att(0*dB)
+        self.nv_double_pass_532.set(frequency=200*MHz, phase=0.0, amplitude = 0.9) #to do
+        
+        self.nv_dds_I.sw.off()
+        self.nv_dds_Q.sw.off()
 
         print("Trap302EnvScan Set Idle Done")
     

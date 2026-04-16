@@ -101,7 +101,7 @@ class HardwareEnvScan(ExpFragment):
         self.core.break_realtime()
         
         self.dds_0_0.set_att(0.5*dB)
-        self.dds_0_0.set(frequency=133*MHz, phase=0.0, amplitude = 0.2)
+        self.dds_0_0.set(frequency=128*MHz, phase=0.0, amplitude = 0.2)
         self.dds_0_0.sw.on()
 
         self.dds_0_1.sw.off()
