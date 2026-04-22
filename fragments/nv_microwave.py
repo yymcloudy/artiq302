@@ -45,5 +45,7 @@ class NVMicrowaveFragment(Trap302EnvScan):
         
         elif switch_mode == "no pulse":
             pass
+        else:
+            print("error switch_mode: ", switch_mode)
 
 nv_microwave_fragment = make_fragment_scan_exp(NVMicrowaveFragment)

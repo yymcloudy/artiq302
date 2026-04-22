@@ -31,7 +31,7 @@ class MW_Ramsey_DC_Feedback(Trap302EnvScan):
     
     def prepare(self):
         Trap302EnvScan.prepare(self)
-        self.init_longtime_equipment(pmt=True)
+        self.init_longtime_equipment(pmt_or_ccd_bool=True)
         self.n_shots = 0
 
 

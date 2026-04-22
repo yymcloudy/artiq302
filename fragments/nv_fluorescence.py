@@ -21,15 +21,15 @@ class NVFluorescenceFragment(Trap302EnvScan):
 
     @kernel
     def run_once(self):
-        data = [0.000] * 8
+        data = [0.000] * 2
 
         self.nv_mw_switch.off()
         
-        self.nv_laser_532nm_switch_control(switch='on')
+        # self.nv_laser_532nm_switch_control(switch='on')
         delay(self.nv_fluorescence_duration.get())
         self.sampler0.sample(data)
-        delay(2000*us) # insure RTIO
-        self.nv_laser_532nm_switch_control(switch='off')
-        return data[7]
+        delay(3*us) # insure RTIO
+        #self.nv_laser_532nm_switch_control(switch='off')
+        return data[1]
 
 nv_fluorescence_fragment = make_fragment_scan_exp(NVFluorescenceFragment)

@@ -29,6 +29,7 @@ class NVMicrowave_Rabi(Trap302EnvScan):
         self.n_shots = 0
         self.init_longtime_equipment(pmt_or_ccd_bool=True)
         self.dds_switch_mode = ["dds_sw", "ttl"][int(self.dds_switch_mode_idx)]
+        print("dds_switch_mode: ", self.dds_switch_mode)
 
         # self.dummy_sequence()
 
@@ -38,8 +39,9 @@ class NVMicrowave_Rabi(Trap302EnvScan):
         self.core.break_realtime()
         self.core.reset()
         self.device_setup_dds(dds_switch_mode=self.dds_switch_mode)
-        self.core.break_realtime()
-        self.core.reset()
+        # self.core.break_realtime()
+        # self.core.reset()
+        # self.device_setup_dds(dds_switch_mode=self.dds_switch_mode)
     
     @kernel
     def device_setup_dds(self, dds_switch_mode="dds_sw"):
@@ -80,13 +82,13 @@ class NVMicrowave_Rabi(Trap302EnvScan):
         self.n_shots += 1
         
         self.polarization.run_once(dds_switch_mode=self.dds_switch_mode)
-        # delay(9000*us)
+
         nv_count_1 = self.detection.run_once(dds_switch_mode=self.dds_switch_mode, measure_shots=4)
         delay(5*us)
-        
+         
         self.microwave.run_once(switch_mode=self.dds_switch_mode)
         
-        nv_count_2 = self.detection.run_once(dds_switch_mode=self.dds_switch_mode, measure_shots=4)
+        nv_count_2 = self.detection.run_once(dds_switch_mode=self.dds_switch_mode, measure_shots=4)  
         
         print("n_shots: ", self.n_shots)
         self.results.push([float(nv_count_1), float(nv_count_2)])

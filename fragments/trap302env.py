@@ -138,7 +138,7 @@ class Trap302EnvScan(HardwareEnvScan):
         self.laser370_switch_control(switch='on')
 
         self.double_pass_370.set_att(1.5*dB)
-        self.double_pass_370.set(frequency=128*MHz, phase=0.0, amplitude = 0.2) # 2026.4.16我随便写的，有可能出错
+        self.double_pass_370.set(frequency=128*MHz, phase=0.0, amplitude = 0.75) # 2026.4.16我随便写的，有可能出错
         self.double_pass_370.sw.on()
         self.mw_tunefreq.sw.on() # dds source is on
 
@@ -149,7 +149,7 @@ class Trap302EnvScan(HardwareEnvScan):
         # AOM+532nm need to be heated up before use
         self.nv_laser_532nm_switch_control(switch='on')
         self.nv_double_pass_532.set_att(0*dB)
-        self.nv_double_pass_532.set(frequency=200*MHz, phase=0.0, amplitude = 0.9) #to do
+        self.nv_double_pass_532.set(frequency=200*MHz, phase=0.0, amplitude = 0.7) #to do
         
         self.nv_dds_I.sw.off()
         self.nv_dds_Q.sw.off()

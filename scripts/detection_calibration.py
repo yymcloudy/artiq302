@@ -33,7 +33,7 @@ class DetectionCalibration(Trap302EnvScan):
     @kernel
     def run_once(self):
         self.doppler_cooling.run_once()
-        self.detection.run_once()
+        self.detection.run_once(pmt_or_ccd_bool=True)
         delay(100*us)
         self.n_shots += 1
         print("n_shots: ", self.n_shots)

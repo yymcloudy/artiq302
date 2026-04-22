@@ -54,11 +54,11 @@ class NVDetectionFragment(Trap302EnvScan):
                 if nv_count_reg[i] < nv_min:
                     nv_min = nv_count_reg[i]
                 delay(3*us)
-            delay(2000*us) # insure RTIO
+            delay(20*us) # insure RTIO
             self.nv_laser_532nm_switch_control(switch='off')
 
             # print("nv_count: ", nv_count)
             return (nv_sum-(nv_max+nv_min))/(measure_shots-2)
-            # return nv_sum/measure_shots
+            # return nv_sum/measure_shots,
 
 nv_detection_fragment = make_fragment_scan_exp(NVDetectionFragment)
